@@ -2,7 +2,8 @@
 
 **AI-Powered Expense Tracker | Node.js + Express + MongoDB**
 
-> 🔗 **Live API:** _https://your-backend.onrender.com_ ← update after deploy  
+🔗 Live API: https://et-backend-qptq.onrender.com
+🌐 Live App: https://et-frontend-y65x.vercel.app
 > 🔗 **Frontend Repo:** [github.com/divya-patel-tot/et_frontend](https://github.com/divya-patel-tot/et_frontend)
 
 ---
