@@ -15,6 +15,15 @@ const cookieOptions = {
   maxAge: 7 * 24 * 60 * 60 * 1000, // 7 days
 };
 
+// ── Validation helpers ────────────────────────────────────────────
+const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+const validatePassword = (pw: string): string | null => {
+  if (pw.length < 8)            return 'Password must be at least 8 characters';
+  if (!/[0-9]/.test(pw))        return 'Password must contain at least one number';
+  if (!/[^A-Za-z0-9]/.test(pw)) return 'Password must contain at least one special character';
+  return null;
+};
+
 export const register = async (req: Request, res: Response): Promise<void> => {
   try {
     const { name, email, password } = req.body as {
@@ -23,18 +32,29 @@ export const register = async (req: Request, res: Response): Promise<void> => {
       password: string;
     };
 
-    if (!name || !email || !password) {
+    if (!name?.trim() || !email?.trim() || !password) {
       res.status(400).json({ message: 'All fields are required' });
       return;
     }
 
-    const existing = await User.findOne({ email });
+    if (!EMAIL_RE.test(email.trim())) {
+      res.status(400).json({ message: 'Please enter a valid email address' });
+      return;
+    }
+
+    const pwError = validatePassword(password);
+    if (pwError) {
+      res.status(400).json({ message: pwError });
+      return;
+    }
+
+    const existing = await User.findOne({ email: email.toLowerCase().trim() });
     if (existing) {
       res.status(400).json({ message: 'Email already registered' });
       return;
     }
 
-    const user = await User.create({ name, email, password });
+    const user = await User.create({ name: name.trim(), email: email.toLowerCase().trim(), password });
     const token = generateToken(user._id.toString());
 
     res.cookie('token', token, cookieOptions);

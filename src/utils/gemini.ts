@@ -11,14 +11,14 @@ const getGeminiClient = (): GoogleGenerativeAI => {
 export interface ExtractedExpense {
   amount: number | null;
   category:
-    | 'Food'
-    | 'Transport'
-    | 'Shopping'
-    | 'Health'
-    | 'Entertainment'
-    | 'Bills'
-    | 'Other'
-    | null;
+  | 'Food'
+  | 'Transport'
+  | 'Shopping'
+  | 'Health'
+  | 'Entertainment'
+  | 'Bills'
+  | 'Other'
+  | null;
   date: string | null;
   note: string | null;
 }
@@ -27,8 +27,9 @@ export const extractExpenseFromText = async (
   userInput: string
 ): Promise<ExtractedExpense> => {
   const genAI = getGeminiClient();
-  const model = genAI.getGenerativeModel({ model: 'gemini-1.5-flash' });
-
+  const model = genAI.getGenerativeModel({
+    model: 'gemini-2.5-flash',
+  });
   const prompt = `Extract expense details from the following text and return ONLY a valid JSON object with keys: amount (number), category (one of: Food, Transport, Shopping, Health, Entertainment, Bills, Other), date (ISO string or null), note (short summary string). Text: "${userInput}"`;
 
   const result = await model.generateContent(prompt);
